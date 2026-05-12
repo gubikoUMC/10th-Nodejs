@@ -1,0 +1,75 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:../data/app.db"
+}
+
+model Member {
+  id             Int             @id @default(autoincrement())
+  name           String
+  reviews        Review[]
+  memberMissions MemberMission[]
+
+  @@map("members")
+}
+
+model Region {
+  id     Int     @id @default(autoincrement())
+  name   String
+  stores Store[]
+
+  @@map("regions")
+}
+
+model Store {
+  id       Int       @id @default(autoincrement())
+  regionId Int       @map("region_id")
+  name     String
+  address  String
+  region   Region    @relation(fields: [regionId], references: [id])
+  reviews  Review[]
+  missions Mission[]
+
+  @@map("stores")
+}
+
+model Review {
+  id        Int    @id @default(autoincrement())
+  storeId   Int    @map("store_id")
+  memberId  Int    @map("member_id")
+  rating    Int
+  content   String
+  createdAt String @map("created_at")
+  store     Store  @relation(fields: [storeId], references: [id])
+  member    Member @relation(fields: [memberId], references: [id])
+
+  @@map("reviews")
+}
+
+model Mission {
+  id             Int             @id @default(autoincrement())
+  storeId        Int             @map("store_id")
+  title          String
+  reward         Int
+  deadline       String
+  createdAt      String          @map("created_at")
+  store          Store           @relation(fields: [storeId], references: [id])
+  memberMissions MemberMission[]
+
+  @@map("missions")
+}
+
+model MemberMission {
+  id           Int     @id @default(autoincrement())
+  memberId     Int     @map("member_id")
+  missionId    Int     @map("mission_id")
+  status       String
+  challengedAt String  @map("challenged_at")
+  member       Member  @relation(fields: [memberId], references: [id])
+  mission      Mission @relation(fields: [missionId], references: [id])
+
+  @@map("member_missions")
+}

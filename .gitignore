@@ -2,3 +2,5 @@ node_modules/
 npm-debug.log*
 node_modules
 scripts/
+week6/
+.DS_Store
